@@ -39,6 +39,7 @@ fn extend_message(message: u16, degree: u16) -> u16 {
 
 #[cfg(test)]
 mod tests {
+    use rstest::rstest;
 
     #[test]
     fn crc() {
@@ -50,16 +51,20 @@ mod tests {
         assert_eq!(super::polynomial_long_division(recovered_message, divisor).1, 0);
     }
     
-    #[test]
-    fn bring_down() {
+    #[rstest(
+        index, expected,
+        case(1, 1),
+        case(2, 1),
+        case(3, 0),
+        case(4, 1),
+    )]
+    fn bring_down(index: u16, expected: u16) {
         let dividend: u16 = 0b1101;
-        assert_eq!(super::bring_down(dividend, 1), 1);
-        assert_eq!(super::bring_down(dividend, 2), 1);
-        assert_eq!(super::bring_down(dividend, 3), 0);
-        assert_eq!(super::bring_down(dividend, 4), 1);
+        assert_eq!(super::bring_down(dividend, index), expected);
     }
+
     #[test]
-    fn it_works() {
+    fn polynomial_long_division() {
         assert_eq!(super::polynomial_long_division(0b10011010000, 0b1101), (0b11111001, 0b101));
     }
 }
