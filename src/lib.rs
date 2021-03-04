@@ -10,9 +10,9 @@ fn polynomial_long_division(dividend: u16, divisor: u16) -> (u16, u16) {
         if length(divisor) <= length(tmp) {
             result <<= 1;
             result |= 1;
-            tmp = tmp ^ divisor;
+            tmp ^= divisor;
             if index == length(dividend) {
-                remainder = tmp; 
+                remainder = tmp;
             }
         } else {
             result <<= 1;
@@ -29,7 +29,7 @@ fn length(n: u16) -> u16 {
 
 #[allow(dead_code)]
 fn bring_down(number: u16, index: u16) -> u16 {
-    (number >> length(number) - index) & 1
+    number >> (length(number) - index) & 1
 }
 
 #[allow(dead_code)]
@@ -48,16 +48,13 @@ mod tests {
         let divisor: u16 = 0b1101;
         let rem = super::polynomial_long_division(extended_message, divisor).1;
         let recovered_message = extended_message ^ rem;
-        assert_eq!(super::polynomial_long_division(recovered_message, divisor).1, 0);
+        assert_eq!(
+            super::polynomial_long_division(recovered_message, divisor).1,
+            0
+        );
     }
-    
-    #[rstest(
-        index, expected,
-        case(1, 1),
-        case(2, 1),
-        case(3, 0),
-        case(4, 1),
-    )]
+
+    #[rstest(index, expected, case(1, 1), case(2, 1), case(3, 0), case(4, 1))]
     fn bring_down(index: u16, expected: u16) {
         let dividend: u16 = 0b1101;
         assert_eq!(super::bring_down(dividend, index), expected);
@@ -65,6 +62,9 @@ mod tests {
 
     #[test]
     fn polynomial_long_division() {
-        assert_eq!(super::polynomial_long_division(0b10011010000, 0b1101), (0b11111001, 0b101));
+        assert_eq!(
+            super::polynomial_long_division(0b10011010000, 0b1101),
+            (0b11111001, 0b101)
+        );
     }
 }
