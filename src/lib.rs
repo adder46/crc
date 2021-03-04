@@ -69,17 +69,45 @@ mod tests {
         );
     }
 
-    #[rstest(index, expected, case(1, 1), case(2, 1), case(3, 0), case(4, 1))]
-    fn bring_down(index: u16, expected: u16) {
-        let dividend: u16 = 0b1101;
-        assert_eq!(super::bring_down(dividend, index), expected);
-    }
-
     #[test]
     fn polynomial_long_division() {
         assert_eq!(
             super::polynomial_long_division(0b10011010000, 0b1101),
             super::DivisionResult::new(0b11111001, 0b101)
         );
+    }
+
+    #[rstest(
+        input,
+        expected,
+        case(0b1, 1),
+        case(0b10, 2),
+        case(0b101, 3),
+        case(0b1010, 4),
+        case(0b10101, 5),
+        case(0b101010, 6),
+        case(0b1010101, 7),
+        case(0b10101010, 8)
+    )]
+    fn length(input: u16, expected: u16) {
+        assert_eq!(super::length(input), expected);
+    }
+
+    #[rstest(index, expected, case(1, 1), case(2, 1), case(3, 0), case(4, 1))]
+    fn bring_down(index: u16, expected: u16) {
+        let dividend: u16 = 0b1101;
+        assert_eq!(super::bring_down(dividend, index), expected);
+    }
+
+    #[rstest(
+        message,
+        degree,
+        expected,
+        case(0b1010, 2, 0b101000),
+        case(0b10011010, 3, 0b10011010000),
+        case(0b10101, 4, 0b101010000)
+    )]
+    fn extend_message(message: u16, degree: u16, expected: u16) {
+        assert_eq!(super::extend_message(message, degree), expected);
     }
 }
