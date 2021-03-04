@@ -29,7 +29,7 @@ fn length(n: u16) -> u16 {
 
 #[allow(dead_code)]
 fn bring_down(number: u16, index: u16) -> u16 {
-    (number >> length(number) - index) & 1 as u16
+    (number >> length(number) - index) & 1
 }
 
 #[allow(dead_code)]
