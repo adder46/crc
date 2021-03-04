@@ -23,18 +23,18 @@ fn polynomial_long_division(dividend: u16, divisor: u16) -> DivisionResult {
         tmp <<= 1;
         tmp |= digit;
         if length(divisor) <= length(tmp) {
-            result <<= 1;
-            result |= 1;
+            quotient <<= 1;
+            quotient |= 1;
             tmp ^= divisor;
             if index == length(dividend) {
                 remainder = tmp;
             }
         } else {
-            result <<= 1;
-            result |= 0;
+            quotient <<= 1;
+            quotient |= 0;
         }
     }
-    (result, remainder)
+    DivisionResult::new(quotient, remainder)
 }
 
 #[allow(dead_code)]
