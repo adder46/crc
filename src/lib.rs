@@ -57,14 +57,14 @@ mod tests {
     use rstest::rstest;
 
     #[test]
-    fn crc() {
-        let message = 0b10011010;
-        let extended_message = super::extend_message(message, 3);
+    fn crc_ok() {
+        let raw_message = 0b10011010;
+        let extended_message = super::extend_message(raw_message, 3);
         let divisor: u16 = 0b1101;
         let rem = super::polynomial_long_division(extended_message, divisor).remainder;
-        let recovered_message = extended_message ^ rem;
+        let resulting_message = extended_message ^ rem;
         assert_eq!(
-            super::polynomial_long_division(recovered_message, divisor).remainder,
+            super::polynomial_long_division(resulting_message, divisor).remainder,
             0
         );
     }
