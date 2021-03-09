@@ -58,6 +58,30 @@ mod tests {
 
     #[test]
     fn crc_ok() {
+        /* If we think of an (n + 1)-bit message as an n-degree polynomial,
+         * we can look at the sender and receiver actually exchanging polynomials
+         * with each other. For example, an 8-bit message 10011010 corresponds to
+         * the polynomial:
+         *
+         *   1 * x^7 + 0 * x^6 + 0 * x^5 + 1 * x^4 + 1 * x^3 + 0 * x^2 + 1 * x^1 + 0 * x^0
+         *
+         *  = x^7 + x^4 + x^3 + x
+         *
+         * Then the sender and receiver have to agree on a divisor polynomial,
+         * for example: x^3 + x^2 + 1 (1101).
+         *
+         * The sender then multiplies the message with by x^k (where k is the degree of
+         * the divisor, in this case 3), which corresponds to extending the message with
+         * three zeroes at the end (shifting left by 3). Using binary polynomial long division
+         * (where subtraction corresponds to the XOR operation) to find the remainder, we
+         * subtracts the remainder (again, XOR) from the message.
+         * The message is then sent (10011010101).
+         *
+         * On the receiving side, the receiver divides the received message by the divisor
+         * that was previously agreed upon. The error did not occur during the transmission
+         * if it divides cleanly. If the remainder is nonzero, it may be necessary to discard
+         * the corrupted message.
+         */
         let raw_message = 0b10011010;
         let extended_message = super::extend_message(raw_message, 3);
         let divisor: u16 = 0b1101;
